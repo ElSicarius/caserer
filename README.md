@@ -1,2 +1,7 @@
 # caserer
-A tool to generate wordlists based on case
+
+A simple golang tool to help you generate wordlists based on case.
+
+
+## Usage
+...
