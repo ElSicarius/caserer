@@ -54,6 +54,56 @@ set_resources.php
 get_People.php
 get_people.php
 ```
+### Uniformizing the wordlist
+Base wordlist:
+```bash
+getUser.php
+GetUser.php
+Get_User.php
+get_info.php
+getresources.php
+SetResources.php
+get_People.php
+get.resource.php
+test.getterResource.php
+infophp.php
+phpinfo.php
+testingpurpose.php
+testing-purpose.php
+```
+Result 
+```bash
+╰─➤  caserer -f ../../examples/wordlist.txt -t snake -u                                    
+get_user.php
+get_user.php
+get_user.php
+get_info.php
+getresources.php
+set_resources.php
+get_people.php
+get.resource.php
+test.getter_resource.php
+infophp.php
+phpinfo.php
+testingpurpose.php
+testing_purpose.php
+```
+/!\ You mush pipe it to sort -uV to remove duplicates
+
+```bash
+╰─➤  caserer -f ../../examples/wordlist.txt -t snake -u | sort -uV
+get.resource.php
+getresources.php
+get_info.php
+get_people.php
+get_user.php
+infophp.php
+phpinfo.php
+set_resources.php
+testingpurpose.php
+testing_purpose.php
+test.getter_resource.php
+```
 
 ### Prefix/Suffix adding
 
