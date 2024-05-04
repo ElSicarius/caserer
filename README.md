@@ -21,7 +21,10 @@ Usage of ./caserer:
 
 ## Install
 
-I'm providing a precompiled binary for linux, you can download it from the release page.
+I'm providing a precompiled binary for linux, you can download it from the release page for stable releases.
+
+I'm also keeping the latest compiled version in cmd/caserer/caserer, you can download it directly from the repository.
+
 
 If you want to compile it yourself, you can use the following command:
 ```bash
