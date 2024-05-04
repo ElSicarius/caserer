@@ -2,6 +2,8 @@
 
 A simple golang tool to help you generate wordlists based on case types.
 
+I know there are other tools that can do this, but they where not satisfying my needs, so i made my own.
+
 
 ## Usage
 ```bash
@@ -51,6 +53,34 @@ getresources.php
 set_resources.php
 get_People.php
 get_people.php
+```
+
+### Prefix/Suffix adding
+
+Base wordlist:
+```bash
+getUser.php
+get_info.php
+getresources.php
+SetResources.php
+get_People.php
+```
+```bash
+╰─➤  cat ../../examples/wordlist.txt | caserer -t snake -S _suffix                     
+get_user_suffix.php
+get_info_suffix.php
+getresources_suffix.php
+set_resources_suffix.php
+get_People_suffix.php
+```
+
+```bash
+cat ../../examples/wordlist.txt | caserer -t snake -P prefix_
+prefix_get_user.php
+prefix_get_info.php
+prefix_getresources.php
+prefix_set_resources.php
+prefix_get_People.php
 ```
 
 ### With language dictionnary
