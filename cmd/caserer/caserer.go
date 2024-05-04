@@ -38,17 +38,18 @@ func main() {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		currentCase := caser.DetectCase(line)
 
-		var finalLine string
-		if currentCase == *argparse.CaseType {
-			finalLine = line
-		} else {
-			finalLine = caser.ConvertCase(line, *argparse.CaseType)
+		if *argparse.Uniform {
+			line = caser.ApplyPrefixSuffix(line, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
 		}
 
-		// Use the new function to apply prefix and suffix properly
-		finalLine = caser.ApplyPrefixSuffix(finalLine, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
+		var finalLine string
+		finalLine = caser.ConvertCase(line, *argparse.CaseType, *argparse.Uniform)
+
+		if !*argparse.Uniform {
+			// Use the new function to apply prefix and suffix properly
+			finalLine = caser.ApplyPrefixSuffix(finalLine, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
+		}
 
 		fmt.Println(finalLine)
 	}

@@ -5,25 +5,36 @@ import (
 	"unicode"
 )
 
-func SplitIntoWords(s string) []string {
+func SplitIntoWords(s string, uniform bool) []string {
 	var words []string
 	var word strings.Builder
 	for _, r := range s {
 		if unicode.IsLower(r) || unicode.IsNumber(r) {
-			word.WriteRune(unicode.ToLower(r))
+			if uniform {
+				r = unicode.ToLower(r)
+			}
+			word.WriteRune(r)
 		} else if unicode.IsUpper(r) {
 			if word.Len() > 0 {
 				words = append(words, word.String())
 				word.Reset()
 			}
-			word.WriteRune(unicode.ToLower(r))
+			if uniform {
+				r = unicode.ToLower(r)
+			}
+			word.WriteRune(r)
 		} else {
 			if word.Len() > 0 {
 				words = append(words, word.String())
 				word.Reset()
-
 			}
-			words = append(words, string(unicode.ToLower(r))) // Include the punctuation as separate "word"
+			if uniform {
+				r = unicode.ToLower(r)
+			}
+			if uniform && r == '-' {
+				r = '_'
+			}
+			words = append(words, string(r)) // Include the punctuation as separate "word"
 		}
 	}
 	if word.Len() > 0 {
@@ -41,11 +52,12 @@ func ParseExtensions(extStr string) map[string]bool {
 	return extMap
 }
 
-func DetectCase(s string) string {
+func DetectCase(s string, uniform bool) string {
 	hasUnderscore := strings.Contains(s, "_")
+	hasDash := strings.Contains(s, "-")
 	hasUppercase := strings.ContainsFunc(s, unicode.IsUpper)
 
-	if hasUnderscore { // removing : && !hasUppercase {
+	if hasUnderscore || (uniform && hasDash) {
 		return "snake"
 	}
 	if !hasUnderscore && hasUppercase {

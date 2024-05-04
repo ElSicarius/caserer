@@ -7,10 +7,10 @@ import (
 	"github.com/ElSicarius/caserer/pkg/dictionnary"
 )
 
-func ConvertCase(s, caseType string) string {
+func ConvertCase(s, caseType string, uniform bool) string {
 	var result strings.Builder
 	extensionSet := ParseExtensions(*argparse.Extensions) // Parse the extensions from the flag
-	words := SplitIntoWords(s)
+	words := SplitIntoWords(s, uniform)
 
 	if *argparse.DictionaryPath != "" {
 		var newWords []string
@@ -19,6 +19,13 @@ func ConvertCase(s, caseType string) string {
 			longestMatch := ""
 			matchIndex := -1
 			// don't process extensions
+			if uniform {
+				if extensionSet[lowerWord] {
+					newWords = append(newWords, lowerWord)
+					continue
+				}
+			}
+
 			if extensionSet[lowerWord] {
 				newWords = append(newWords, word)
 				continue
@@ -50,14 +57,35 @@ func ConvertCase(s, caseType string) string {
 			}
 		}
 		words = newWords
+	} else {
+		newWords := []string{}
+
+		for _, word := range words {
+			lowerWord := strings.ToLower(word)
+			// don't process extensions
+			if uniform {
+				if extensionSet[lowerWord] {
+					newWords = append(newWords, lowerWord)
+					continue
+				}
+			}
+
+			if extensionSet[lowerWord] {
+				newWords = append(newWords, word)
+				continue
+			}
+
+			newWords = append(newWords, word)
+		}
+		words = newWords
 	}
 
 	// Use the appropriate case conversion based on the caseType flag
 	switch caseType {
 	case "snake":
-		result.WriteString(toSnakeCase(words, extensionSet))
+		result.WriteString(toSnakeCase(words, extensionSet, uniform))
 	case "camel":
-		result.WriteString(toCamelCase(words, extensionSet))
+		result.WriteString(toCamelCase(words, extensionSet, uniform))
 	default:
 		result.WriteString(s)
 	}
@@ -65,42 +93,47 @@ func ConvertCase(s, caseType string) string {
 	return result.String()
 }
 
-func toSnakeCase(words []string, extMap map[string]bool) string {
+func toSnakeCase(words []string, extMap map[string]bool, uniform bool) string {
 	var result strings.Builder
 	for i, word := range words {
 		// Append underscore only if it's not the first word and the previous word is not a dot
 		// and the current word is not in the extension map
-		if i > 0 && !extMap[strings.ToLower(words[i-1])] && words[i-1] != "." {
+		if i > 0 && !extMap[strings.ToLower(words[i-1])] && words[i-1] != "." && word != "_" && words[i-1] != "_" {
 			result.WriteRune('_')
 		} else {
 			// remove the last underscore (2 chars back)
 			curWord := result.String()
 
-			if len(curWord) > 2 && string(curWord[len(curWord)-2]) == "_" {
-
+			if len(curWord) > 2 && string(curWord[len(curWord)-2]) == "_" && string(curWord[len(curWord)-1]) == "." {
 				result.Reset()
 				result.WriteString(curWord[:len(curWord)-2])
 				result.WriteRune('.')
 
 			}
 		}
-		result.WriteString(strings.ToLower(word))
+
+		if uniform {
+			word = strings.ToLower(word)
+		}
+		result.WriteString(word)
 	}
 	return result.String()
 }
 
-func toCamelCase(words []string, extMap map[string]bool) string {
+func toCamelCase(words []string, extMap map[string]bool, uniform bool) string {
 	var result strings.Builder
 	for i, word := range words {
 		// Check if the current word is an extension or follows a dot
 		if word == "_" {
 			// Skip underscores
+		} else if i == 0 && uniform {
+			result.WriteString(strings.ToLower(word)) // First word
 		} else if i > 0 && words[i-1] == "." && extMap[strings.ToLower(word)] {
 			result.WriteString(strings.ToLower(word)) // Keep extensions in lowercase
 		} else if i > 0 && words[i-1] != "." {
 			result.WriteString(strings.Title(word)) // Capitalize if not after a dot
 		} else {
-			result.WriteString(strings.ToLower(word)) // First word or after a dot and not an extension
+			result.WriteString(word) // after a dot and not an extension
 		}
 	}
 	return result.String()

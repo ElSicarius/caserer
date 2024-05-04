@@ -1,4 +1,6 @@
 getUser.php
+GetUser.php
+Get_User.php
 get_info.php
 getresources.php
 SetResources.php
@@ -8,3 +10,4 @@ test.getterResource.php
 infophp.php
 phpinfo.php
 testingpurpose.php
+testing-purpose.php
