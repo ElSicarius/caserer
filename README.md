@@ -22,3 +22,32 @@ Usage of ./caserer:
 cat /opt/lists/web/jsfiles.txt | caserer -t snake | tee /opt/lists/web/jsfilesSnake.txt
 cat /opt/lists/web/phpassetnoteBIG.txt | caserer -t camel | tee /opt/lists/web/phpassetnoteBIGCamel.php
 ```
+
+## Cases examples
+Base wordlist:
+```bash
+getUser.php
+get_info.php
+getresources.php
+SetResources.php
+get_People.php
+```
+
+```bash
+╰─➤  cat ../../examples/wordlist.txt| caserer -t camel
+getUser.php
+getInfo.php
+getresources.php
+SetResources.php
+getPeople.php
+```
+
+```bash
+╰─➤  cat ../../examples/wordlist.txt| caserer -t snake
+get_user.php
+get_info.php
+getresources.php
+set_resources.php
+get_People.php
+get_people.php
+```
