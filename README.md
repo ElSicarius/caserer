@@ -105,6 +105,38 @@ testing_purpose.php
 test.getter_resource.php
 ```
 
+Also, this will affect (uniformize) prefixes and suffixes output:
+```bash
+╰─➤  caserer -f ../../examples/wordlist.txt -t snake -u -P ajax_ | sort -uV
+ajax_get.resource.php
+ajax_getresources.php
+ajax_get_info.php
+ajax_get_people.php
+ajax_get_user.php
+ajax_infophp.php
+ajax_phpinfo.php
+ajax_set_resources.php
+ajax_testingpurpose.php
+ajax_testing_purpose.php
+ajax_test.getter_resource.php
+```
+
+```bash
+caserer -f ../../examples/wordlist.txt -t camel -u -P ajax_ | sort -uV
+ajaxGet.resource.php
+ajaxGetInfo.php
+ajaxGetPeople.php
+ajaxGetUser.php
+ajaxGetresources.php
+ajaxInfophp.php
+ajaxPhpinfo.php
+ajaxSetResources.php
+ajaxTest.getterResource.php
+ajaxTestingPurpose.php
+ajaxTestingpurpose.php
+```
+
+
 ### Prefix/Suffix adding
 
 Base wordlist:
