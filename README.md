@@ -34,7 +34,7 @@ get_People.php
 ```
 
 ```bash
-╰─➤  cat ../../examples/wordlist.txt| caserer -t camel
+╰─➤  cat ../../examples/wordlist.txt | caserer -t camel
 getUser.php
 getInfo.php
 getresources.php
@@ -43,7 +43,7 @@ getPeople.php
 ```
 
 ```bash
-╰─➤  cat ../../examples/wordlist.txt| caserer -t snake
+╰─➤  cat ../../examples/wordlist.txt | caserer -t snake
 get_user.php
 get_info.php
 getresources.php
