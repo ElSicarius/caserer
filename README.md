@@ -19,6 +19,19 @@ Usage of ./caserer:
 
 ```
 
+## Install
+
+I'm providing a precompiled binary for linux, you can download it from the release page.
+
+If you want to compile it yourself, you can use the following command:
+```bash
+git clone git@github.com:ElSicarius/caserer.git
+cd caserer/cmd/caserer
+go build .
+cp caserer /usr/local/bin
+caserer -h
+```
+
 ## Example
 ```bash
 cat /opt/lists/web/jsfiles.txt | caserer -t snake | tee /opt/lists/web/jsfilesSnake.txt
