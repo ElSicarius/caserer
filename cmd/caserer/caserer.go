@@ -9,9 +9,8 @@ import (
 	"github.com/ElSicarius/caserer/pkg/argparse"
 	"github.com/ElSicarius/caserer/pkg/caser"
 	"github.com/ElSicarius/caserer/pkg/dictionnary"
+	"github.com/zenthangplus/goccm"
 )
-
-// Command-line flags
 
 func main() {
 	flag.Parse()
@@ -36,26 +35,38 @@ func main() {
 		scanner = bufio.NewScanner(os.Stdin)
 	}
 
+	// Define max number of concurrent goroutines
+	ccm := goccm.New(50) // limits to 4 concurrent goroutines
+
 	for scanner.Scan() {
 		line := scanner.Text()
+		ccm.Wait() // wait if there are already max goroutines running
 
-		if *argparse.Uniform {
-			line = caser.ApplyPrefixSuffix(line, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
-		}
-
-		var finalLine string
-		finalLine = caser.ConvertCase(line, *argparse.CaseType, *argparse.Uniform)
-
-		if !*argparse.Uniform {
-			// Use the new function to apply prefix and suffix properly
-			finalLine = caser.ApplyPrefixSuffix(finalLine, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
-		}
-
-		fmt.Println(finalLine)
+		go func(text string) {
+			defer ccm.Done() // mark this goroutine as completed on exit
+			processedLine := processLine(text)
+			fmt.Println(processedLine) // handle output; consider synchronization if order matters
+		}(line)
 	}
+
+	ccm.WaitAllDone() // wait for all goroutines to complete
 
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+func processLine(line string) string {
+	if *argparse.Uniform {
+		line = caser.ApplyPrefixSuffix(line, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
+	}
+
+	finalLine := caser.ConvertCase(line, *argparse.CaseType, *argparse.Uniform)
+
+	if !*argparse.Uniform {
+		finalLine = caser.ApplyPrefixSuffix(finalLine, *argparse.Prefix, *argparse.Suffix, caser.ParseExtensions(*argparse.Extensions))
+	}
+
+	return finalLine
 }
