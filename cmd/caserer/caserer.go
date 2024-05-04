@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// Define max number of concurrent goroutines
-	ccm := goccm.New(50) // limits to 4 concurrent goroutines
+	ccm := goccm.New(60) // limits to 4 concurrent goroutines
 
 	for scanner.Scan() {
 		line := scanner.Text()

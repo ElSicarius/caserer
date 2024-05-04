@@ -98,7 +98,7 @@ func toSnakeCase(words []string, extMap map[string]bool, uniform bool) string {
 	for i, word := range words {
 		// Append underscore only if it's not the first word and the previous word is not a dot
 		// and the current word is not in the extension map
-		if i > 0 && !extMap[strings.ToLower(words[i-1])] && words[i-1] != "." && word != "_" && words[i-1] != "_" {
+		if i > 0 && !extMap[strings.ToLower(words[i-1])] && words[i-1] != "." && word != "_" && words[i-1] != "_" && word != "/" && words[i-1] != "/" {
 			result.WriteRune('_')
 		} else {
 			// remove the last underscore (2 chars back)

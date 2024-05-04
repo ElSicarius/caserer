@@ -4,10 +4,6 @@ Get_User.php
 get_info.php
 getresources.php
 SetResources.php
-get_People.php
-get.resource.php
-test.getterResource.php
-infophp.php
-phpinfo.php
-testingpurpose.php
-testing-purpose.php
+/ajaxPath/testIng.php
+123/ajaxPath/testIng.php
+aaa/../ajaxPath/testIng.php
