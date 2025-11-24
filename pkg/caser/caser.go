@@ -2,15 +2,25 @@ package caser
 
 import (
 	"strings"
+	"unicode"
 
 	"github.com/ElSicarius/caserer/pkg/argparse"
 	"github.com/ElSicarius/caserer/pkg/dictionnary"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 func ConvertCase(s, caseType string, uniform bool) string {
 	var result strings.Builder
 	extensionSet := ParseExtensions(*argparse.Extensions) // Parse the extensions from the flag
 	words := SplitIntoWords(s, uniform)
+
+	if caseType == "ascii" {
+		// Convert each word to ASCII before anything else
+		for i := range words {
+			words[i] = ToAscii(words[i])
+		}
+	}
 
 	if *argparse.DictionaryPath != "" {
 		var newWords []string
@@ -86,6 +96,10 @@ func ConvertCase(s, caseType string, uniform bool) string {
 		result.WriteString(toSnakeCase(words, extensionSet, uniform))
 	case "camel":
 		result.WriteString(toCamelCase(words, extensionSet, uniform))
+	case "dash":
+		result.WriteString(toDashCase(words, extensionSet, uniform))
+	case "ascii":
+		result.WriteString(ToAscii(s))
 	default:
 		result.WriteString(s)
 	}
@@ -135,6 +149,45 @@ func toCamelCase(words []string, extMap map[string]bool, uniform bool) string {
 		} else {
 			result.WriteString(word) // after a dot and not an extension
 		}
+	}
+	return result.String()
+}
+
+// ToAscii removes accents/diacritics from all unicode languages
+func ToAscii(input string) string {
+	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
+	result, _, _ := transform.String(t, input)
+	return result
+}
+
+// isMn identifies non-spacing marks (accents, diacritics)
+func isMn(r rune) bool {
+	return unicode.Is(unicode.Mn, r)
+}
+
+func toDashCase(words []string, extMap map[string]bool, uniform bool) string {
+	var result strings.Builder
+	for i, word := range words {
+		// Append dash only if it's not the first word and the previous word is not a dot
+		// and the current word is not in the extension map
+		if i > 0 && !extMap[strings.ToLower(words[i-1])] && words[i-1] != "." && word != "-" && words[i-1] != "-" && word != "/" && words[i-1] != "/" {
+			result.WriteRune('-')
+		} else {
+			// remove the last dash (2 chars back)
+			curWord := result.String()
+
+			if len(curWord) > 2 && string(curWord[len(curWord)-2]) == "-" && string(curWord[len(curWord)-1]) == "." {
+				result.Reset()
+				result.WriteString(curWord[:len(curWord)-2])
+				result.WriteRune('.')
+
+			}
+		}
+
+		if uniform {
+			word = strings.ToLower(word)
+		}
+		result.WriteString(word)
 	}
 	return result.String()
 }

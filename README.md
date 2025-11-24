@@ -15,7 +15,7 @@ Usage of ./caserer:
   -l string
         Path to a dictionary file for language matching
   -t string
-        Case conversion type ('snake' or 'camel') (default "snake")
+        Case conversion type ('snake' or 'camel' or 'dash' or 'ascii') (default "snake")
 
 ```
 
@@ -223,6 +223,22 @@ test.getterResource.php
 infoPhp.php
 phpInfo.php
 testingPurpose.php
+```
+
+## Ascii normalization
+
+base wordlist
+```bash
+žvanilu
+žurnalistech
+žlutém
+```
+
+```bash
+caserer -f ../../examples/ascii.txt -t ascii
+zvanilu
+zurnalistech
+zlutem
 ```
 
 **limits**:
